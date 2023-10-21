@@ -1,0 +1,2654 @@
+{
+    "openapi": "3.0.2",
+    "info": {
+        "title": "POS API BARQUN",
+        "version": "1.0.0",
+        "description": "OpenAPI for Point of Sale (POS) API",
+        "termsOfService": "https://barqun.com/",
+        "contact": {
+            "name": "Zacky",
+            "email": "firdausrazan55@gmail.com",
+            "url": "https://www.instagram.com/zacky_fir4/"
+        },
+        "license": {
+            "name": "Private License for Project Team"
+        }
+    },
+    "servers": [
+        {
+            "description": "POS Barqun RESTful API",
+            "url": "http://127.0.0.1:8000/api"
+        }
+    ],
+    "paths": {
+        "/login": {
+            "post": {
+                "summary": "User Login",
+                "description": "Authenticate a user and generate a token for login",
+                "tags": ["Authenticated"],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "description": "User's email address"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "description": "User's password"
+                                    }
+                                },
+                                "required": ["email", "password"]
+                            },
+                            "example": {
+                                "email": "admin@gmail.com",
+                                "password": "password123"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Login successful",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/LoginResponse"
+                                },
+                                "example": {
+                                    "message": "Login successful",
+                                    "data": {
+                                        "user": {
+                                            "id": 123,
+                                            "name": "admin",
+                                            "email": "admin@gmail.com",
+                                            "phone": "08789876543",
+                                            "image": "example.png",
+                                            "id_outlet": null,
+                                            "role": "admin",
+                                            "active": true
+                                        },
+                                        "token": "your_jwt_token_here"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "The email and password fields are required",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "A message describing the error"
+                                        },
+                                        "errors": {
+                                            "type": "object",
+                                            "properties": {
+                                                "email": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "description": "Specific error message for the 'email' field"
+                                                    }
+                                                },
+                                                "password": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "description": "Specific error message for the 'password' field"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "message": "The email field is required. (and 1 more error)",
+                                    "errors": {
+                                        "email": [
+                                            "The email field is required."
+                                        ],
+                                        "password": [
+                                            "The password field is required."
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "The provided credentials are incorrect",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UnauthenticatedLogin"
+                                },
+                                "example": {
+                                    "message": "The provided credentials are incorrect."
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerErrorResponse"
+                    }
+                }
+            }
+        },
+        "/logout": {
+            "get": {
+                "summary": "User Logout",
+                "description": "Log out the authenticated user.",
+                "tags": ["Authenticated"],
+                "responses": {
+                    "200": {
+                        "description": "Logout successful.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "A message describing the result of the operation"
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "message": "Logout successful."
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthenticatedResponse"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerErrorResponse"
+                    }
+                }
+            }
+        },
+
+        "/profile": {
+            "get": {
+                "summary": "Get User Profile",
+                "description": "Retrieve user profile data.",
+                "tags": ["Profile"],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProfileResponse"
+                                },
+                                "example": {
+                                    "message": "Successful response.",
+                                    "data": {
+                                        "user": {
+                                            "id": 11,
+                                            "name": "admin",
+                                            "email": "admin@gmail.com",
+                                            "phone": "08789876543",
+                                            "image": "example.png",
+                                            "id_outlet": null,
+                                            "role": "admin",
+                                            "active": true
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthenticatedResponse"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerErrorResponse"
+                    }
+                }
+            }
+        },
+
+        "/business-categories": {
+            "description": "API for managing business categories.",
+            "get": {
+                "summary": "List All Business Categories",
+                "description": "Get a list of all business categories.",
+                "tags": ["Business Category"],
+                "responses": {
+                    "200": {
+                        "description": "Successful in getting all business categories data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "A message describing the result of the operation"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "format": "int64"
+                                                    },
+                                                    "category_name": {
+                                                        "type": "string"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "message": "Successful in getting all business categories data.",
+                                    "data": [
+                                        {
+                                            "id": 1,
+                                            "category_name": "Category 1"
+                                        },
+                                        {
+                                            "id": 2,
+                                            "category_name": "Category 2"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthenticatedResponse"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/ForbiddenResponse"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerErrorResponse"
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create a New Business Category",
+                "description": "Create a new business category.",
+                "tags": ["Business Category"],
+                "requestBody": {
+                    "description": "Business Category data to be created.",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "category_name": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": ["category_name"]
+                            },
+                            "example": {
+                                "category_name": "Warung"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Business category saved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CreatedBusinessCategoryResponse"
+                                },
+                                "example": {
+                                    "message": "Business category saved successfully",
+                                    "data": {
+                                        "id": 6,
+                                        "category_name": "Warung"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthenticatedResponse"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/ForbiddenResponse"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/BusinessCategoryFieldRequired"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerErrorResponse"
+                    }
+                }
+            }
+        },
+        "/business-categories/{id}": {
+            "description": "API for managing business categories.",
+            "parameters": [
+                {
+                    "name": "id",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    },
+                    "description": "The ID of the business category to update or delete."
+                }
+            ],
+            "get": {
+                "summary": "Get Business Category by ID",
+                "description": "Retrieve a business category by its ID.",
+                "tags": ["Business Category"],
+                "responses": {
+                    "200": {
+                        "description": "Business category found successfully ",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "A message describing the result of the operation"
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "format": "int64"
+                                                },
+                                                "category_name": {
+                                                    "type": "string"
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "message": "Business category found successfully.",
+                                    "data": {
+                                        "id": 6,
+                                        "category_name": "Warung"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthenticatedResponse"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/ForbiddenResponse"
+                    },
+
+                    "404": {
+                        "$ref": "#/components/responses/BusinessCategoryNotFound"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerErrorResponse"
+                    }
+                }
+            },
+            "put": {
+                "summary": "Update Business Category",
+                "description": "Update an existing business category by ID.",
+                "tags": ["Business Category"],
+                "requestBody": {
+                    "description": "Business Category data to be updated.",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "category_name": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": ["category_name"]
+                            },
+                            "example": {
+                                "category_name": "Restoran"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Business category updated successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "format": "int64"
+                                                },
+                                                "category_name": {
+                                                    "type": "string"
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "message": "Business category updated successfully",
+                                    "data": {
+                                        "id": 1,
+                                        "category_name": "Restoran"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthenticatedResponse"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/ForbiddenResponse"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/BusinessCategoryNotFound"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/BusinessCategoryFieldRequired"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerErrorResponse"
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete Business Category",
+                "description": "Delete an existing business category by ID.",
+                "tags": ["Business Category"],
+                "responses": {
+                    "204": {
+                        "description": "Business category deleted successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "format": "int64"
+                                                },
+                                                "category_name": {
+                                                    "type": "string"
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "message": "Business category deleted successfully",
+                                    "data": {
+                                        "id": 6,
+                                        "category_name": "Warung"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthenticatedResponse"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/ForbiddenResponse"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/BusinessCategoryNotFound"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerErrorResponse"
+                    }
+                }
+            }
+        },
+
+        "/outlets": {
+            "description": "API for managing outlets.",
+            "get": {
+                "summary": "List All Outlets",
+                "description": "Get a list of all outlets.",
+                "tags": ["Outlet"],
+                "responses": {
+                    "200": {
+                        "description": "Successful in getting all outlets data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "format": "int64"
+                                                    },
+                                                    "business_name": {
+                                                        "type": "string"
+                                                    },
+                                                    "address": {
+                                                        "type": "string"
+                                                    },
+                                                    "phone": {
+                                                        "type": "string"
+                                                    },
+                                                    "id_business_category": {
+                                                        "type": "integer",
+                                                        "format": "int64"
+                                                    },
+                                                    "active_until": {
+                                                        "type": "string",
+                                                        "format": "date"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "message": "Successful in getting all outlets data",
+                                    "data": [
+                                        {
+                                            "id": 1,
+                                            "business_name": "PJ Wulandari Pratiwi",
+                                            "address": "Ki. Jakarta No. 834, Ambon 34563, Jambi",
+                                            "phone": "(+62) 553 0024 850",
+                                            "id_business_category": 1,
+                                            "active_until": "2025-08-28"
+                                        },
+                                        {
+                                            "id": 2,
+                                            "business_name": "Perum Purnawati",
+                                            "address": "Ki. Gremet No. 778, Sukabumi 18450, Kaltim",
+                                            "phone": "0618 8415 760",
+                                            "id_business_category": 3,
+                                            "active_until": "2025-08-11"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthenticatedResponse"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/ForbiddenResponse"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerErrorResponse"
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create a New Outlet",
+                "description": "Create a new outlet.",
+                "tags": ["Outlet"],
+                "requestBody": {
+                    "description": "Outlet data to be created.",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "business_name": {
+                                        "type": "string"
+                                    },
+                                    "address": {
+                                        "type": "string"
+                                    },
+                                    "phone": {
+                                        "type": "string"
+                                    },
+                                    "show_tax_note": {
+                                        "type": "boolean"
+                                    },
+                                    "tax_amount": {
+                                        "type": "number",
+                                        "format": "double"
+                                    },
+                                    "taxpayer_name": {
+                                        "type": "string"
+                                    },
+                                    "taxpayer_address": {
+                                        "type": "string"
+                                    },
+                                    "nopd": {
+                                        "type": "string"
+                                    },
+                                    "npwpd": {
+                                        "type": "string"
+                                    },
+                                    "id_business_category": {
+                                        "type": "integer"
+                                    },
+                                    "opening_hours": {
+                                        "type": "string"
+                                    },
+                                    "print_memo": {
+                                        "type": "boolean"
+                                    },
+                                    "print_kitchen_memo": {
+                                        "type": "boolean"
+                                    },
+                                    "active_until": {
+                                        "type": "string",
+                                        "format": "date"
+                                    }
+                                },
+                                "required": [
+                                    "business_name",
+                                    "address",
+                                    "phone",
+                                    "show_tax_note",
+                                    "tax_amount",
+                                    "id_business_category",
+                                    "print_memo",
+                                    "print_kitchen_memo"
+                                ]
+                            },
+                            "example": {
+                                "business_name": "Contoh Outlet",
+                                "address": "Jl. Contoh No. 123",
+                                "phone": "0812345678",
+                                "show_tax_note": true,
+                                "tax_amount": 12.34,
+                                "taxpayer_name": "Nama Wajib Pajak",
+                                "taxpayer_address": "Alamat Wajib Pajak",
+                                "nopd": "NOPD123456",
+                                "npwpd": "NPWPD1234567890",
+                                "id_business_category": "1",
+                                "opening_hours": "Senin - Minggu, 09:00 - 21:00",
+                                "print_memo": true,
+                                "print_kitchen_memo": false,
+                                "active_until": "2024-12-31"
+                            }
+                        }
+                    }
+                },
+
+                "responses": {
+                    "201": {
+                        "description": "Outlet saved successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "A message describing the result of the operation."
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "description": "Unique identifier for the outlet."
+                                                },
+                                                "business_name": {
+                                                    "type": "string",
+                                                    "description": "Name of the business."
+                                                },
+                                                "address": {
+                                                    "type": "string",
+                                                    "description": "Address of the business."
+                                                },
+                                                "phone": {
+                                                    "type": "string",
+                                                    "description": "Phone number of the business."
+                                                },
+                                                "show_tax_note": {
+                                                    "type": "boolean",
+                                                    "description": "Indicates whether tax notes should be shown."
+                                                },
+                                                "tax_amount": {
+                                                    "type": "number",
+                                                    "format": "float",
+                                                    "description": "Tax amount applied to the business."
+                                                },
+                                                "taxpayer_name": {
+                                                    "type": "string",
+                                                    "description": "Name of the taxpayer."
+                                                },
+                                                "taxpayer_address": {
+                                                    "type": "string",
+                                                    "description": "Address of the taxpayer."
+                                                },
+                                                "nopd": {
+                                                    "type": "string",
+                                                    "description": "Taxpayer's NOPD (Nomor Objek Pajak Daerah) identifier."
+                                                },
+                                                "npwpd": {
+                                                    "type": "string",
+                                                    "description": "Taxpayer's NPWPD (Nomor Pokok Wajib Pajak Daerah) identifier."
+                                                },
+                                                "id_business_category": {
+                                                    "type": "integer",
+                                                    "description": "ID of the business category."
+                                                },
+                                                "opening_hours": {
+                                                    "type": "string",
+                                                    "description": "Business operating hours."
+                                                },
+                                                "print_memo": {
+                                                    "type": "boolean",
+                                                    "description": "Indicates whether memos should be printed."
+                                                },
+                                                "print_kitchen_memo": {
+                                                    "type": "boolean",
+                                                    "description": "Indicates whether kitchen memos should be printed."
+                                                },
+                                                "active_until": {
+                                                    "type": "string",
+                                                    "format": "date",
+                                                    "description": "Date until the outlet is active."
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "message": "Outlet saved successfully",
+                                    "data": {
+                                        "id": 11,
+                                        "business_name": "Contoh Outlet",
+                                        "address": "Jl. Contoh No. 123",
+                                        "phone": "0812345678",
+                                        "show_tax_note": true,
+                                        "tax_amount": 12.34,
+                                        "taxpayer_name": "Nama Wajib Pajak",
+                                        "taxpayer_address": "Alamat Wajib Pajak",
+                                        "nopd": "NOPD123456",
+                                        "npwpd": "NPWPD1234567890",
+                                        "id_business_category": "1",
+                                        "opening_hours": "Senin - Minggu, 09:00 - 21:00",
+                                        "print_memo": true,
+                                        "print_kitchen_memo": false,
+                                        "active_until": "2024-12-31"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthenticatedResponse"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/ForbiddenResponse"
+                    },
+
+                    "422": {
+                        "$ref": "#/components/responses/OutletFieldRequired"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerErrorResponse"
+                    }
+                }
+            }
+        },
+        "/outlets/{id}": {
+            "description": "API for managing outlets.",
+            "parameters": [
+                {
+                    "name": "id",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    },
+                    "description": "The ID of the outlet to retrieve, update, or delete."
+                }
+            ],
+            "get": {
+                "summary": "Get Outlet by ID",
+                "description": "Retrieve an outlet by its ID.",
+                "tags": ["Outlet"],
+                "responses": {
+                    "200": {
+                        "description": "Outlet found successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "A message describing the result of the operation."
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "description": "Unique identifier for the outlet."
+                                                },
+                                                "business_name": {
+                                                    "type": "string",
+                                                    "description": "Name of the business."
+                                                },
+                                                "address": {
+                                                    "type": "string",
+                                                    "description": "Address of the business."
+                                                },
+                                                "phone": {
+                                                    "type": "string",
+                                                    "description": "Phone number of the business."
+                                                },
+                                                "show_tax_note": {
+                                                    "type": "integer",
+                                                    "description": "Indicates whether tax notes should be shown (0 or 1)."
+                                                },
+                                                "tax_amount": {
+                                                    "type": "string",
+                                                    "description": "Tax amount applied to the business."
+                                                },
+                                                "taxpayer_name": {
+                                                    "type": "string",
+                                                    "description": "Name of the taxpayer."
+                                                },
+                                                "taxpayer_address": {
+                                                    "type": "string",
+                                                    "description": "Address of the taxpayer."
+                                                },
+                                                "nopd": {
+                                                    "type": "string",
+                                                    "description": "Taxpayer's NOPD (Nomor Objek Pajak Daerah) identifier."
+                                                },
+                                                "npwpd": {
+                                                    "type": "string",
+                                                    "description": "Taxpayer's NPWPD (Nomor Pokok Wajib Pajak Daerah) identifier."
+                                                },
+                                                "id_business_category": {
+                                                    "type": "integer",
+                                                    "description": "ID of the business category."
+                                                },
+                                                "opening_hours": {
+                                                    "type": "string",
+                                                    "description": "Business operating hours."
+                                                },
+                                                "print_memo": {
+                                                    "type": "integer",
+                                                    "description": "Indicates whether memos should be printed (0 or 1)."
+                                                },
+                                                "print_kitchen_memo": {
+                                                    "type": "integer",
+                                                    "description": "Indicates whether kitchen memos should be printed (0 or 1)."
+                                                },
+                                                "active_until": {
+                                                    "type": "string",
+                                                    "format": "date",
+                                                    "description": "Date until the outlet is active."
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "message": "Outlet found successfully",
+                                    "data": {
+                                        "id": 1,
+                                        "business_name": "PJ Wulandari Pratiwi",
+                                        "address": "Ki. Jakarta No. 834, Ambon 34563, Jambi",
+                                        "phone": "(+62) 553 0024 850",
+                                        "show_tax_note": 1,
+                                        "tax_amount": "38.30",
+                                        "taxpayer_name": "Halima Rahmawati S.Pd",
+                                        "taxpayer_address": "Jr. Kusmanto No. 539, Madiun 70409, Bengkulu",
+                                        "nopd": "910548100861430746",
+                                        "npwpd": "136444440763902",
+                                        "id_business_category": 1,
+                                        "opening_hours": "Monday - Sunday, 08:00 AM - 08:00 PM",
+                                        "print_memo": 1,
+                                        "print_kitchen_memo": 1,
+                                        "active_until": "2025-08-28"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthenticatedResponse"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/ForbiddenResponse"
+                    },
+
+                    "404": {
+                        "$ref": "#/components/responses/OutletNotFound"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerErrorResponse"
+                    }
+                }
+            },
+            "put": {
+                "summary": "Update Outlet",
+                "description": "Update an existing outlet by ID.",
+                "tags": ["Outlet"],
+                "requestBody": {
+                    "description": "Outlet data to be updated.",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "business_name": {
+                                        "type": "string",
+                                        "description": "Name of the business."
+                                    },
+                                    "address": {
+                                        "type": "string",
+                                        "description": "Address of the business."
+                                    },
+                                    "phone": {
+                                        "type": "string",
+                                        "description": "Phone number of the business."
+                                    },
+                                    "show_tax_note": {
+                                        "type": "boolean",
+                                        "description": "Indicates whether tax notes should be shown (true or false)."
+                                    },
+                                    "tax_amount": {
+                                        "type": "number",
+                                        "format": "double",
+                                        "description": "Tax amount applied to the business."
+                                    },
+                                    "taxpayer_name": {
+                                        "type": "string",
+                                        "description": "Name of the taxpayer."
+                                    },
+                                    "taxpayer_address": {
+                                        "type": "string",
+                                        "description": "Address of the taxpayer."
+                                    },
+                                    "nopd": {
+                                        "type": "string",
+                                        "description": "Taxpayer's NOPD (Nomor Objek Pajak Daerah) identifier."
+                                    },
+                                    "npwpd": {
+                                        "type": "string",
+                                        "description": "Taxpayer's NPWPD (Nomor Pokok Wajib Pajak Daerah) identifier."
+                                    },
+                                    "id_business_category": {
+                                        "type": "integer",
+                                        "description": "ID of the business category."
+                                    },
+                                    "opening_hours": {
+                                        "type": "string",
+                                        "description": "Business operating hours."
+                                    },
+                                    "print_memo": {
+                                        "type": "boolean",
+                                        "description": "Indicates whether memos should be printed (true or false)."
+                                    },
+                                    "print_kitchen_memo": {
+                                        "type": "boolean",
+                                        "description": "Indicates whether kitchen memos should be printed (true or false)."
+                                    },
+                                    "active_until": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "description": "Date until the outlet is active."
+                                    }
+                                },
+                                "required": [
+                                    "business_name",
+                                    "address",
+                                    "phone",
+                                    "show_tax_note",
+                                    "tax_amount",
+                                    "id_business_category",
+                                    "print_memo",
+                                    "print_kitchen_memo"
+                                ]
+                            },
+                            "example": {
+                                "business_name": "Warung jaki",
+                                "address": "Jl. Contoh No. 123",
+                                "phone": "0812345678",
+                                "show_tax_note": true,
+                                "tax_amount": 12.34,
+                                "taxpayer_name": "Nama Wajib Pajak",
+                                "taxpayer_address": "Alamat Wajib Pajak",
+                                "nopd": "NOPD123456",
+                                "npwpd": "NPWPD1234567890",
+                                "id_business_category": "1",
+                                "opening_hours": "Senin - Minggu, 09:00 - 21:00",
+                                "print_memo": true,
+                                "print_kitchen_memo": false,
+                                "active_until": "2024-12-31"
+                            }
+                        }
+                    }
+                },
+
+                "responses": {
+                    "200": {
+                        "description": "Outlet updated successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "A message indicating the success of the operation."
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "description": "ID of the outlet."
+                                                },
+                                                "business_name": {
+                                                    "type": "string",
+                                                    "description": "Name of the business."
+                                                },
+                                                "address": {
+                                                    "type": "string",
+                                                    "description": "Address of the business."
+                                                },
+                                                "phone": {
+                                                    "type": "string",
+                                                    "description": "Phone number of the business."
+                                                },
+                                                "show_tax_note": {
+                                                    "type": "boolean",
+                                                    "description": "Indicates whether tax notes should be shown (true or false)."
+                                                },
+                                                "tax_amount": {
+                                                    "type": "number",
+                                                    "format": "double",
+                                                    "description": "Tax amount applied to the business."
+                                                },
+                                                "taxpayer_name": {
+                                                    "type": "string",
+                                                    "description": "Name of the taxpayer."
+                                                },
+                                                "taxpayer_address": {
+                                                    "type": "string",
+                                                    "description": "Address of the taxpayer."
+                                                },
+                                                "nopd": {
+                                                    "type": "string",
+                                                    "description": "Taxpayer's NOPD (Nomor Objek Pajak Daerah) identifier."
+                                                },
+                                                "npwpd": {
+                                                    "type": "string",
+                                                    "description": "Taxpayer's NPWPD (Nomor Pokok Wajib Pajak Daerah) identifier."
+                                                },
+                                                "id_business_category": {
+                                                    "type": "string",
+                                                    "description": "ID of the business category."
+                                                },
+                                                "opening_hours": {
+                                                    "type": "string",
+                                                    "description": "Business operating hours."
+                                                },
+                                                "print_memo": {
+                                                    "type": "boolean",
+                                                    "description": "Indicates whether memos should be printed (true or false)."
+                                                },
+                                                "print_kitchen_memo": {
+                                                    "type": "boolean",
+                                                    "description": "Indicates whether kitchen memos should be printed (true or false)."
+                                                },
+                                                "active_until": {
+                                                    "type": "string",
+                                                    "format": "date",
+                                                    "description": "Date until the outlet is active."
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "message": "Outlet updated successfully",
+                                    "data": {
+                                        "id": 10,
+                                        "business_name": "Warung jaki",
+                                        "address": "Jl. Contoh No. 123",
+                                        "phone": "0812345678",
+                                        "show_tax_note": true,
+                                        "tax_amount": 12.34,
+                                        "taxpayer_name": "Nama Wajib Pajak",
+                                        "taxpayer_address": "Alamat Wajib Pajak",
+                                        "nopd": "NOPD123456",
+                                        "npwpd": "NPWPD1234567890",
+                                        "id_business_category": "1",
+                                        "opening_hours": "Senin - Minggu, 09:00 - 21:00",
+                                        "print_memo": true,
+                                        "print_kitchen_memo": false,
+                                        "active_until": "2024-12-31"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/ForbiddenResponse"
+                    },
+
+                    "404": {
+                        "$ref": "#/components/responses/OutletNotFound"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/OutletFieldRequired"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerErrorResponse"
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete Outlet",
+                "description": "Delete an existing outlet by ID.",
+                "tags": ["Outlet"],
+                "responses": {
+                    "204": {
+                        "description": "Outlet deleted successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "A message indicating successful deletion."
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "description": "Outlet ID."
+                                                },
+                                                "business_name": {
+                                                    "type": "string",
+                                                    "description": "Outlet business name."
+                                                },
+                                                "address": {
+                                                    "type": "string",
+                                                    "description": "Outlet address."
+                                                },
+                                                "phone": {
+                                                    "type": "string",
+                                                    "description": "Outlet phone number."
+                                                },
+                                                "show_tax_note": {
+                                                    "type": "integer",
+                                                    "description": "Indicator for showing tax note."
+                                                },
+                                                "tax_amount": {
+                                                    "type": "string",
+                                                    "description": "Outlet tax amount."
+                                                },
+                                                "taxpayer_name": {
+                                                    "type": "string",
+                                                    "description": "Taxpayer name."
+                                                },
+                                                "taxpayer_address": {
+                                                    "type": "string",
+                                                    "description": "Taxpayer address."
+                                                },
+                                                "nopd": {
+                                                    "type": "string",
+                                                    "description": "NOPD (Nomor Objek Pajak Daerah) for the outlet."
+                                                },
+                                                "npwpd": {
+                                                    "type": "string",
+                                                    "description": "NPWPD (Nomor Pokok Wajib Pajak Daerah) for the outlet."
+                                                },
+                                                "id_business_category": {
+                                                    "type": "integer",
+                                                    "description": "Business category ID."
+                                                },
+                                                "opening_hours": {
+                                                    "type": "string",
+                                                    "description": "Outlet opening hours."
+                                                },
+                                                "print_memo": {
+                                                    "type": "integer",
+                                                    "description": "Indicator for printing memo."
+                                                },
+                                                "print_kitchen_memo": {
+                                                    "type": "integer",
+                                                    "description": "Indicator for printing kitchen memo."
+                                                },
+                                                "active_until": {
+                                                    "type": "string",
+                                                    "description": "Date until which the outlet is active."
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "message": "Outlet deleted successfully",
+                                    "data": {
+                                        "id": 10,
+                                        "business_name": "Warung jaki",
+                                        "address": "Jl. Contoh No. 123",
+                                        "phone": "0812345678",
+                                        "show_tax_note": 1,
+                                        "tax_amount": "12.34",
+                                        "taxpayer_name": "Nama Wajib Pajak",
+                                        "taxpayer_address": "Alamat Wajib Pajak",
+                                        "nopd": "NOPD123456",
+                                        "npwpd": "NPWPD1234567890",
+                                        "id_business_category": 1,
+                                        "opening_hours": "Senin - Minggu, 09:00 - 21:00",
+                                        "print_memo": 1,
+                                        "print_kitchen_memo": 0,
+                                        "active_until": "2024-12-31"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthenticatedResponse"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/ForbiddenResponse"
+                    },
+
+                    "404": {
+                        "$ref": "#/components/responses/OutletNotFound"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerErrorResponse"
+                    }
+                }
+            }
+        },
+
+        "/users": {
+            "description": "API for managing users.",
+            "get": {
+                "summary": "List All Users",
+                "description": "Get a list of all users.",
+                "tags": ["User"],
+                "responses": {
+                    "200": {
+                        "description": "Successful in getting all users data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "A message indicating the success of the request."
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "description": "User's ID."
+                                                    },
+                                                    "name": {
+                                                        "type": "string",
+                                                        "description": "User's name."
+                                                    },
+                                                    "email": {
+                                                        "type": "string",
+                                                        "description": "User's email address."
+                                                    },
+                                                    "phone": {
+                                                        "type": "string",
+                                                        "description": "User's phone number."
+                                                    },
+                                                    "image": {
+                                                        "type": "string",
+                                                        "description": "URL to the user's image (nullable)."
+                                                    },
+                                                    "role": {
+                                                        "type": "string",
+                                                        "description": "User's role."
+                                                    },
+                                                    "id_outlet": {
+                                                        "type": "integer",
+                                                        "description": "User's outlet ID (nullable)."
+                                                    },
+                                                    "active": {
+                                                        "type": "integer",
+                                                        "description": "Indicates whether the user is active or not (0 or 1)."
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "example": {
+                                        "message": "Successful in getting all users data",
+                                        "data": [
+                                            {
+                                                "id": 1,
+                                                "name": "Hasna Lestari",
+                                                "email": "kani.sihombing@example.com",
+                                                "phone": "0367 2791 5163",
+                                                "image": "https://via.placeholder.com/360x360.png/00dd00?text=animals+explicabo",
+                                                "role": "outlet owner",
+                                                "id_outlet": 10,
+                                                "active": 0
+                                            },
+                                            {
+                                                "id": 2,
+                                                "name": "Caturangga Harsanto Situmorang S.Sos",
+                                                "email": "simbolon.hani@example.net",
+                                                "phone": "(+62) 809 3691 759",
+                                                "image": "https://via.placeholder.com/360x360.png/003355?text=animals+molestiae",
+                                                "role": "outlet employes",
+                                                "id_outlet": 6,
+                                                "active": 0
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthenticatedResponse"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/ForbiddenResponse"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerErrorResponse"
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create a New User",
+                "description": "Create a new user.",
+                "tags": ["User"],
+                "requestBody": {
+                    "description": "User data to be created.",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email"
+                                    },
+                                    "phone": {
+                                        "type": "string"
+                                    },
+                                    "password": {
+                                        "type": "string"
+                                    },
+                                    "image": {
+                                        "type": "string"
+                                    },
+                                    "id_outlet": {
+                                        "type": "integer"
+                                    },
+                                    "role": {
+                                        "type": "string"
+                                    },
+                                    "active": {
+                                        "type": "boolean"
+                                    }
+                                },
+                                "required": [
+                                    "name",
+                                    "email",
+                                    "phone",
+                                    "password",
+                                    "role",
+                                    "active"
+                                ]
+                            },
+                            "example": {
+                                "message": "User saved successfully",
+                                "data": {
+                                    "id": 16,
+                                    "name": "John cena",
+                                    "email": "johncena1@example.com",
+                                    "phone": "08123456789",
+                                    "image": "zFok2A2Qp6J5IDycAFfURDf6O0LuJA.png",
+                                    "role": "admin",
+                                    "id_outlet": null,
+                                    "active": "1"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "User saved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "A message indicating the status of the request."
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "description": "User ID."
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "description": "User's name."
+                                                },
+                                                "email": {
+                                                    "type": "string",
+                                                    "description": "User's email address."
+                                                },
+                                                "phone": {
+                                                    "type": "string",
+                                                    "description": "User's phone number."
+                                                },
+                                                "image": {
+                                                    "type": "string",
+                                                    "description": "URL to the user's image (nullable)."
+                                                },
+                                                "role": {
+                                                    "type": "string",
+                                                    "description": "User's role."
+                                                },
+                                                "id_outlet": {
+                                                    "type": "integer",
+                                                    "description": "User's outlet ID (nullable)."
+                                                },
+                                                "active": {
+                                                    "type": "integer",
+                                                    "description": "Indicates whether the user is active or not."
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "message": "User saved successfully",
+                                    "data": {
+                                        "id": 16,
+                                        "name": "John cena",
+                                        "email": "johncena1@example.com",
+                                        "phone": "08123456789",
+                                        "image": "zFok2A2Qp6J5IDycAFfURDf6O0LuJA.png",
+                                        "role": "admin",
+                                        "id_outlet": null,
+                                        "active": 1
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthenticatedResponse"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/ForbiddenResponse"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/UserFieldRequired"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerErrorResponse"
+                    }
+                }
+            }
+        },
+        "/users/{id}": {
+            "description": "API for managing users.",
+            "get": {
+                "summary": "Get User by ID",
+                "description": "Get a specific user by ID.",
+                "tags": ["User"],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "A message indicating the status of the request."
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "description": "User ID."
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "description": "User's name."
+                                                },
+                                                "email": {
+                                                    "type": "string",
+                                                    "description": "User's email address."
+                                                },
+                                                "phone": {
+                                                    "type": "string",
+                                                    "description": "User's phone number."
+                                                },
+                                                "image": {
+                                                    "type": "string",
+                                                    "description": "URL to the user's image."
+                                                },
+                                                "role": {
+                                                    "type": "string",
+                                                    "description": "User's role."
+                                                },
+                                                "id_outlet": {
+                                                    "type": "integer",
+                                                    "description": "User's outlet ID (nullable)."
+                                                },
+                                                "active": {
+                                                    "type": "integer",
+                                                    "description": "Indicates whether the user is active or not."
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "message": "User found successfully",
+                                    "data": {
+                                        "id": 16,
+                                        "name": "John cena",
+                                        "email": "johncena1@example.com",
+                                        "phone": "08123456789",
+                                        "image": "zFok2A2Qp6J5IDycAFfURDf6O0LuJA.png",
+                                        "role": "admin",
+                                        "id_outlet": null,
+                                        "active": 1
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthenticatedResponse"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/UserNotFound"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerErrorResponse"
+                    }
+                }
+            },
+            "put": {
+                "summary": "Update User",
+                "description": "Update an existing user by ID.",
+                "tags": ["User"],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "User data to be updated.",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email"
+                                    },
+                                    "phone": {
+                                        "type": "string"
+                                    },
+                                    "password": {
+                                        "type": "string"
+                                    },
+                                    "image": {
+                                        "type": "string"
+                                    },
+                                    "id_outlet": {
+                                        "type": "integer"
+                                    },
+                                    "role": {
+                                        "type": "string"
+                                    },
+                                    "active": {
+                                        "type": "boolean"
+                                    }
+                                }
+                            },
+                            "example": {
+                                "id": 16,
+                                "name": "John cena",
+                                "email": "johncena1@example.com",
+                                "phone": "08123456789",
+                                "image": "zFok2A2Qp6J5IDycAFfURDf6O0LuJA.png",
+                                "role": "admin",
+                                "id_outlet": null,
+                                "active": 1
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Pesan konfirmasi"
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "description": "ID pengguna yang diperbarui"
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "description": "Nama pengguna"
+                                                },
+                                                "email": {
+                                                    "type": "string",
+                                                    "description": "Alamat email pengguna"
+                                                },
+                                                "phone": {
+                                                    "type": "string",
+                                                    "description": "Nomor telepon pengguna"
+                                                },
+                                                "image": {
+                                                    "type": "string",
+                                                    "description": "Nama berkas gambar pengguna"
+                                                },
+                                                "role": {
+                                                    "type": "string",
+                                                    "description": "Peran pengguna"
+                                                },
+                                                "id_outlet": {
+                                                    "type": "integer",
+                                                    "description": "ID outlet yang terkait dengan pengguna"
+                                                },
+                                                "active": {
+                                                    "type": "integer",
+                                                    "description": "Status aktivasi pengguna (0 untuk non-aktif, 1 untuk aktif)"
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "name",
+                                                "email",
+                                                "phone",
+                                                "image",
+                                                "role",
+                                                "id_outlet",
+                                                "active"
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+
+                    "401": {
+                        "$ref": "#/components/responses/UnauthenticatedResponse"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/ForbiddenResponse"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/UserNotFound"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/UserFieldRequired"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerErrorResponse"
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete User",
+                "description": "Delete an existing user by ID.",
+                "tags": ["User"],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "User deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "A message indicating the status of the request."
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "description": "User ID."
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "description": "User's name."
+                                                },
+                                                "email": {
+                                                    "type": "string",
+                                                    "description": "User's email address."
+                                                },
+                                                "phone": {
+                                                    "type": "string",
+                                                    "description": "User's phone number."
+                                                },
+                                                "image": {
+                                                    "type": "string",
+                                                    "description": "URL to the user's image."
+                                                },
+                                                "role": {
+                                                    "type": "string",
+                                                    "description": "User's role."
+                                                },
+                                                "id_outlet": {
+                                                    "type": "integer",
+                                                    "description": "User's outlet ID (nullable)."
+                                                },
+                                                "active": {
+                                                    "type": "integer",
+                                                    "description": "Indicates whether the user is active or not."
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "message": "User deleted successfully",
+                                    "data": {
+                                        "id": 16,
+                                        "name": "John cena",
+                                        "email": "johncena1@example.com",
+                                        "phone": "08123456789",
+                                        "image": "zFok2A2Qp6J5IDycAFfURDf6O0LuJA.png",
+                                        "role": "admin",
+                                        "id_outlet": null,
+                                        "active": 1
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthenticatedResponse"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/ForbiddenResponse"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/UserNotFound"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerErrorResponse"
+                    }
+                }
+            }
+        },
+
+        "/taxes": {
+            "description": "API for managing taxes.",
+            "get": {
+                "summary": "List All Taxes",
+                "description": "Get a list of all taxes.",
+                "tags": ["Tax"],
+                "responses": {
+                    "200": {
+                        "description": "Successful in getting all taxes data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "A message indicating the successful retrieval of tax data."
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "description": "Tax ID."
+                                                    },
+                                                    "name": {
+                                                        "type": "string",
+                                                        "description": "Tax name."
+                                                    },
+                                                    "percent": {
+                                                        "type": "number",
+                                                        "format": "double",
+                                                        "description": "Tax percentage."
+                                                    }
+                                                }
+                                            },
+                                            "description": "An array of tax data."
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "message": "Successful in getting all tax data",
+                                    "data": [
+                                        {
+                                            "id": 1,
+                                            "name": "Sunt ipsa omnis.",
+                                            "percent": "7.43"
+                                        },
+                                        {
+                                            "id": 2,
+                                            "name": "Eos provident ea doloremque.",
+                                            "percent": "69.23"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthenticatedResponse"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/ForbiddenResponse"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerErrorResponse"
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create a New Tax",
+                "description": "Create a new tax.",
+                "tags": ["Tax"],
+                "requestBody": {
+                    "description": "Tax data to be created.",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "description": "Tax name."
+                                    },
+                                    "percent": {
+                                        "type": "number",
+                                        "format": "double",
+                                        "description": "Tax percentage."
+                                    }
+                                },
+                                "required": ["name", "percent"]
+                            },
+                            "example": {
+                                "name": "Budi",
+                                "percent": 10.0
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Tax created successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "A message indicating successful deletion."
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "description": "Id of the percent."
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "description": "Tax name."
+                                                },
+                                                "percent": {
+                                                    "type": "number",
+                                                    "description": "Tax percent."
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "message": "Tax saved successfully",
+                                    "data": {
+                                        "id": 21,
+                                        "name": "Budi",
+                                        "percent": 10
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthenticatedResponse"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/ForbiddenResponse"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/TaxFieldRequired"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerErrorResponse"
+                    }
+                }
+            }
+        },
+        "/taxes/{id}": {
+            "get": {
+                "summary": "Get Tax by ID",
+                "description": "Get a tax by its ID.",
+                "tags": ["Tax"],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "The ID of the tax to retrieve."
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Tax found successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "The success message."
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "description": "The ID of the tax."
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "description": "The name of the tax."
+                                                },
+                                                "percent": {
+                                                    "type": "number",
+                                                    "format": "double",
+                                                    "description": "The tax percentage."
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "message": "Tax found successfully",
+                                    "data": {
+                                        "id": 2,
+                                        "name": "Eos provident ea doloremque.",
+                                        "percent": "69.23"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthenticatedResponse"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/ForbiddenResponse"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/TaxNotFound"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerErrorResponse"
+                    }
+                }
+            },
+            "put": {
+                "summary": "Update Tax",
+                "description": "Update an existing tax by ID.",
+                "tags": ["Tax"],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "The ID of the tax to update."
+                    }
+                ],
+                "requestBody": {
+                    "description": "Tax data to be updated.",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "description": "The name of the tax."
+                                    },
+                                    "percent": {
+                                        "type": "number",
+                                        "format": "double",
+                                        "description": "The tax percentage"
+                                    }
+                                },
+                                "required": ["name", "percent"]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Tax updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "The success message."
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "description": "The ID of the updated tax."
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "description": "The updated name of the tax."
+                                                },
+                                                "percent": {
+                                                    "type": "number",
+                                                    "format": "double",
+                                                    "description": "The updated tax percentage."
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "message": "Tax updated successfully",
+                                    "data": {
+                                        "id": 2,
+                                        "name": "Hartono",
+                                        "percent": "20.00"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthenticatedResponse"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/ForbiddenResponse"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/TaxNotFound"
+                    },
+
+                    "422": {
+                        "$ref": "#/components/responses/TaxFieldRequired"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerErrorResponse"
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete Tax",
+                "description": "Delete an existing tax by ID.",
+                "tags": ["Tax"],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "The ID of the tax to delete."
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Tax deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "The success message."
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "description": "The ID of the deleted tax."
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "description": "The name of the deleted tax."
+                                                },
+                                                "percent": {
+                                                    "type": "number",
+                                                    "format": "double",
+                                                    "description": "The tax percentage of the deleted tax."
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "message": "Tax deleted successfully",
+                                    "data": {
+                                        "id": 21,
+                                        "name": "Budi",
+                                        "percent": "10.00"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthenticatedResponse"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/ForbiddenResponse"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/TaxNotFound"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerErrorResponse"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "User": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "description": "User's ID"
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "User's name"
+                    },
+                    "email": {
+                        "type": "string",
+                        "description": "User's email address"
+                    },
+                    "phone": {
+                        "type": "string",
+                        "description": "User's phone number"
+                    },
+                    "image": {
+                        "type": "string",
+                        "description": "URL to the user's image (nullable)"
+                    },
+                    "id_outlet": {
+                        "type": "integer",
+                        "description": "User's outlet ID (nullable)"
+                    },
+                    "role": {
+                        "type": "string",
+                        "description": "User's role"
+                    },
+                    "active": {
+                        "type": "boolean",
+                        "description": "Indicates whether the user is active or not"
+                    }
+                }
+            },
+            "LoginResponse": {
+                "type": "object",
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "description": "A message describing the result of the operation"
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/User"
+                    }
+                }
+            },
+
+            "ProfileResponse": {
+                "type": "object",
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "description": "A message describing the result of the operation"
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/User"
+                    }
+                }
+            },
+            "CreatedBusinessCategoryResponse": {
+                "type": "object",
+                "properties": {
+                    "message": {
+                        "type": "string"
+                    },
+                    "data": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "format": "int64"
+                            },
+                            "category_name": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+
+            "NotFoundResponse": {
+                "type": "object",
+                "properties": {
+                    "message": {
+                        "type": "string"
+                    }
+                }
+            },
+            "UnauthenticatedLogin": {
+                "type": "object",
+                "properties": {
+                    "errors": {
+                        "type": "string",
+                        "description": "The email or password is incorrect"
+                    }
+                }
+            },
+            "Unauthenticated": {
+                "type": "object",
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "description": "Unauthenticated."
+                    }
+                }
+            },
+            "Forbidden": {
+                "type": "object",
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "description": "Forbidden."
+                    }
+                }
+            },
+            "ServerError": {
+                "type": "object",
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "responses": {
+            "BusinessCategoryNotFound": {
+                "description": "Business category not found.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/NotFoundResponse"
+                        },
+                        "example": {
+                            "message": "Business category not found"
+                        }
+                    }
+                }
+            },
+            "OutletNotFound": {
+                "description": "Outlet not found.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/NotFoundResponse"
+                        },
+                        "example": {
+                            "message": "Outlet not found"
+                        }
+                    }
+                }
+            },
+            "UserNotFound": {
+                "description": "Outlet not found.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/NotFoundResponse"
+                        },
+                        "example": {
+                            "message": "User not found"
+                        }
+                    }
+                }
+            },
+            "TaxNotFound": {
+                "description": "Tax not found.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/NotFoundResponse"
+                        },
+                        "example": {
+                            "message": "Tax not found"
+                        }
+                    }
+                }
+            },
+
+            "BusinessCategoryFieldRequired": {
+                "description": "The xxx field is required",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string"
+                                },
+                                "errors": {
+                                    "type": "object",
+                                    "properties": {
+                                        "category_name": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "example": {
+                            "message": "The category name field is required.",
+                            "errors": {
+                                "category_name": [
+                                    "The category name field is required."
+                                ]
+                            }
+                        }
+                    }
+                }
+            },
+            "OutletFieldRequired": {
+                "description": "The xxx field is required or validation error.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "description": "A message indicating validation errors."
+                                },
+                                "errors": {
+                                    "type": "object",
+                                    "description": "An object containing detailed validation errors."
+                                }
+                            }
+                        },
+                        "example": {
+                            "message": "The business name field is required. (and 6 more errors)",
+                            "errors": {
+                                "business_name": [
+                                    "The business name field is required."
+                                ],
+                                "address": ["The address field is required."],
+                                "phone": ["The phone field is required."],
+                                "show_tax_note": [
+                                    "The show tax note field is required."
+                                ],
+                                "tax_amount": [
+                                    "The tax amount field is required."
+                                ],
+                                "print_memo": [
+                                    "The print memo field is required."
+                                ],
+                                "print_kitchen_memo": [
+                                    "The print kitchen memo field is required."
+                                ]
+                            }
+                        }
+                    }
+                }
+            },
+            "UserFieldRequired": {
+                "description": "The name field is required or validation error.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "description": "A message indicating a validation error."
+                                },
+                                "errors": {
+                                    "type": "object",
+                                    "description": "Validation errors with field names as keys and error messages as values."
+                                }
+                            }
+                        },
+                        "example": {
+                            "message": "The name field is required. (and 4 more errors)",
+                            "errors": {
+                                "name": ["The name field is required."],
+                                "email": ["The email field is required."],
+                                "phone": ["The phone field is required."],
+                                "password": ["The password field is required."],
+                                "role": ["The role field is required."]
+                            }
+                        }
+                    }
+                }
+            },
+            "TaxFieldRequired": {
+                "description": "The xxx field is required or validation error.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "description": "A message indicating validation errors."
+                                },
+                                "errors": {
+                                    "type": "object",
+                                    "description": "An object containing detailed validation errors."
+                                }
+                            }
+                        },
+                        "example": {
+                            "message": "The name field is required. (and 1 more errors)",
+                            "errors": {
+                                "name": ["The name field is required."],
+                                "percent": ["The percent field is required."]
+                            }
+                        }
+                    }
+                }
+            },
+
+            "ForbiddenResponse": {
+                "description": "Forbidden",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/Forbidden"
+                        },
+                        "example": {
+                            "message": "Forbidden."
+                        }
+                    }
+                }
+            },
+
+            "ServerErrorResponse": {
+                "description": "An error occurred",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/ServerError"
+                        },
+                        "example": {
+                            "message": "An error occurred."
+                        }
+                    }
+                }
+            },
+            "UnauthenticatedResponse": {
+                "description": "Unauthenticated",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/Unauthenticated"
+                        },
+                        "example": {
+                            "message": "Unauthenticated."
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

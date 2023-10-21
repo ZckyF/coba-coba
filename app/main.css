@@ -1,0 +1,53 @@
+.montserrat {
+  font-family: 'Montserrat', sans-serif !important;
+}
+.btn {
+  background: linear-gradient(to right, #3d76e7, #1fb5be) !important;
+  color: white !important;
+}
+.btn-dark {
+  background: linear-gradient(to right, #1565c0, #0097a7) !important;
+  color: white !important;
+}
+body {
+  background-color: black !important;
+}
+
+.accbtn {
+  background: #3d76e7 !important;
+  color: white !important;
+}
+.backbtn {
+  background: #1fb5be !important;
+  color: white !important;
+}
+
+.alert {
+  background: linear-gradient(to right, #3d76e7, #1fb5be);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.background-app {
+  background-color: #fcfcfc !important;
+}
+.background-color-white {
+  background-color: #fcfcfc !important;
+}
+.background-color-black {
+  background-color: #2c2c2c !important;
+  color: white !important;
+}
+
+/* Background Button */
+.btn-delete {
+  background-color: #e53935 !important;
+}
+.btn-enter {
+  background-color: #00796b !important;
+}
+.btn-edit {
+  background-color: #00acc1 !important;
+}
+.btn-block {
+  background-color: #aa0202 !important;
+}
